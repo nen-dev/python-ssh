@@ -1,7 +1,7 @@
 # python-ssh
 This application connect to different server throuh ssh using settings from config.yml.
 
-'''yml
+```yml
 hosts:
  - name: 10.1.1.1 # Specify name or IP of control host
    username: true_old_admin # Specify username 
@@ -23,4 +23,4 @@ hosts:
    interact: False # Set true if you want interact cli 
    logfile: /home/true_old_admin/python-ssh-today.log # Specify log file path
    cmd: ['echo "Hello world!"']
-''' 
+```
