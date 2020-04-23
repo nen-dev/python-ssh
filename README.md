@@ -25,7 +25,7 @@ hosts:
    cmd: ['echo "Hello world!"']
 ```
 # How to use it?
-* Requirements: apt-get -y install python3 python3-venv 
+** Requirements: apt-get -y install python3 python3-venv **
 git clone git@github.com:nen-dev/python-ssh.git'
 cd python-ssh
 sourse bin/activate
