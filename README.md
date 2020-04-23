@@ -27,8 +27,15 @@ hosts:
 # How to use it?
 
 **Requirements: apt-get -y install python3 python3-venv**
+
+1) Run:
 ```bash
 git clone git@github.com:nen-dev/python-ssh.git
+```
+2) Customize config.yml
+3) Run:
+```bash
 cd python-ssh
 source bin/activate
-python3 main.py```
+python3 main.py
+```
