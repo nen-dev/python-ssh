@@ -1,5 +1,5 @@
 # python-ssh
-This application connect to different server throuh ssh using settings from config.yml.
+This application connect to different servers throuh ssh using settings from config.yml.
 
 ```yml
 hosts:
