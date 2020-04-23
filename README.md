@@ -1,4 +1,4 @@
-#python-ssh
+# python-ssh
 
 This application connect to different servers throuh ssh using settings from config.yml.
 
@@ -25,7 +25,7 @@ hosts:
    logfile: /home/true_old_admin/python-ssh-today.log
    cmd: ['echo "Hello world!"']
 ```
-#How to use it?
+# How to use it?
 
 **Requirements: apt-get -y install python3 python3-venv**
 1) Run:
