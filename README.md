@@ -24,3 +24,9 @@ hosts:
    logfile: /home/true_old_admin/python-ssh-today.log # Specify log file path
    cmd: ['echo "Hello world!"']
 ```
+# How to use it?
+*** Requirements: apt-get -y install python3 python3-venv
+git clone git@github.com:nen-dev/python-ssh.git'
+cd python-ssh
+sourse bin/activate
+python3 main.py
