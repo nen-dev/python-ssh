@@ -13,15 +13,15 @@ hosts:
    interact: False # Set true if you want interact cli 
    logfile: /home/true_old_admin/python-ssh-today.log # Specify log file path
    cmd: ['ls -la','echo $PATH $HOME','uptime']
- - name: 10.1.1.2 # Specify name or IP of control host
-   username: true_old_admin # Specify username 
-   password: strong-password # Specify password
-   getpassword: False # Set true if you want enter password
-   su: very-strong-password # Specify su password
-   sugetpassword: False # Set true if you want enter password
-   use_sudo: False # Set true if you want run command with sudo
-   interact: False # Set true if you want interact cli 
-   logfile: /home/true_old_admin/python-ssh-today.log # Specify log file path
+ - name: 10.1.1.2 
+   username: true_old_admin
+   password: strong-password 
+   getpassword: False 
+   su: very-strong-password 
+   sugetpassword: False 
+   use_sudo: False 
+   interact: False 
+   logfile: /home/true_old_admin/python-ssh-today.log
    cmd: ['echo "Hello world!"']
 ```
 # How to use it?
