@@ -1,6 +1,10 @@
 # python-ssh
 
 This application connect to different servers throuh ssh using settings from config.yml.
+Run different commands on each.
+Provide log to screen and files.
+
+Simple multithreading support ^^
 
 ```yaml
 hosts:
