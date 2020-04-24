@@ -11,7 +11,7 @@ with open('config.yml','r') as configfile:
     devices = {}        
     today = strftime("%y%m%d-%H%M%S", gmtime())
     logfiledir = config['logfiledir']
-    # TO DO file exist check try
+    # TODO file exist check try
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(name)-12s %(message)s',
                         datefmt='%C%y-%m-%dT%H:%M:%S',#'%m-%d %H:%M',
@@ -23,7 +23,8 @@ with open('config.yml','r') as configfile:
     console.setFormatter(formatter)
     # add the handler to the root logger
     logging.getLogger('').addHandler(console)   
-
+    # TODO add key file host
+    # TODO add adding key file 
     for host in config['hosts']:      
         devices[host['name']] = sshclass.device(name=host['name'],
                                 username=host['username'],

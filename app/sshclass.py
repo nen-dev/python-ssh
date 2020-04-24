@@ -20,14 +20,14 @@ class device():
         self.spawn() 
 
     def spawn(self):
-        # TO DO add check params
+        # TODO add check params
         try:
             child = pxssh.pxssh()
             child.login(self.name, self.username, self.password)
             child.sendline('uptime')
             child.prompt()
-            # TO DO ADD CHECK SUDO
-            # TO DO ADD CHECK ERROR CMD
+            # TODO ADD CHECK SUDO
+            # TODO ADD CHECK ERROR CMD
             for command in self.cmd:
                 child.sendline(command)
                 child.prompt()
