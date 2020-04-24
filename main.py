@@ -4,11 +4,24 @@ import logging
 from pexpect import pxssh
 from app import sshclass
 from time import gmtime, strftime
+from threading import Thread
 
+def run_device(host):
+    deviceone = sshclass.device(name=host['name'],
+                            username=host['username'],
+                            password=host['password'],
+                            getpassword=host['getpassword'],
+                            su=host['su'],
+                            sugetpassword=host['sugetpassword'],
+                            use_sudo=host['use_sudo'],
+                            interact=host['interact'],
+                            cmd=host['cmd'])
+    return(deviceone)
 
 with open('config.yml','r') as configfile:
+    fcontinue = True
     config = yaml.safe_load(configfile)
-    devices = {}        
+    threads = []
     today = strftime("%y%m%d-%H%M%S", gmtime())
     logfiledir = config['logfiledir']
     # TODO file exist check try
@@ -25,16 +38,16 @@ with open('config.yml','r') as configfile:
     logging.getLogger('').addHandler(console)   
     # TODO add key file host
     # TODO add adding key file 
-    for host in config['hosts']:      
-        devices[host['name']] = sshclass.device(name=host['name'],
-                                username=host['username'],
-                                password=host['password'],
-                                getpassword=host['getpassword'],
-                                su=host['su'],
-                                sugetpassword=host['sugetpassword'],
-                                use_sudo=host['use_sudo'],
-                                interact=host['interact'],
-                                cmd=host['cmd'])
-        
-
+    for host in config['hosts']:     
+        t = Thread(target=run_device, args=(host,))
+        t.setName(host['name'])
+        t.start()
+        threads.append(t)      
+    while(fcontinue):
+        fcontinue = False
+        for t in threads:
+            print(t.getName, t.isAlive())
+            fcontinue =+ t.isAlive()    
+            print('DEBUG: continue ',str(fcontinue))
+    print("All is done")
 
