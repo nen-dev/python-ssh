@@ -35,6 +35,7 @@ class device():
             if bool(self.interact):
                 child.interact()
             child.logout()
+            print(self.name, ' - completed')
         except pxssh.ExceptionPxssh as e:
             print("pxssh failed on login.")
             print(e)

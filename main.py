@@ -46,8 +46,6 @@ with open('config.yml','r') as configfile:
     while(fcontinue):
         fcontinue = False
         for t in threads:
-            print(t.getName, t.isAlive())
             fcontinue =+ t.isAlive()    
-            print('DEBUG: continue ',str(fcontinue))
     print("All is done")
 
