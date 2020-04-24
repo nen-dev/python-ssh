@@ -12,7 +12,6 @@ hosts:
    sugetpassword: False # Set true if you want enter password
    use_sudo: False # Set true if you want run command with sudo
    interact: False # Set true if you want interact cli 
-   logfile: /home/true_old_admin/python-ssh-today.log # Specify log file path
    cmd: ['ls -la','echo $PATH $HOME','uptime']
  - name: 10.1.1.2 
    username: true_old_admin
@@ -22,8 +21,8 @@ hosts:
    sugetpassword: False 
    use_sudo: False 
    interact: False 
-   logfile: /home/true_old_admin/python-ssh-today.log
-   cmd: ['echo "Hello world!"']
+   cmd: ['echo "Hello world!"]
+logfiledir:  /home/nen/ssh-log # Specify log directory path. Full file path will be logfiledir/%y%m%d-%H%M%S.log 
 ```
 # How to use it?
 
