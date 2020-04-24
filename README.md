@@ -22,7 +22,7 @@ hosts:
    use_sudo: False 
    interact: False 
    cmd: ['echo "Hello world!"]
-logfiledir:  /home/nen/ssh-log # Specify log directory path. Full file path will be logfiledir/%y%m%d-%H%M%S.log 
+logfiledir:  /home/true_old_admin/ssh-log # Specify log directory path. Full file path will be logfiledir/%y%m%d-%H%M%S.log 
 ```
 # How to use it?
 

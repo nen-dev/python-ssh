@@ -21,3 +21,4 @@ hosts:
    interact: False 
    logfile: /home/true_old_admin/python-ssh-today.log
    cmd: ['echo "Hello world!"']
+logfiledir:  /home/true_old_admin/ssh-log # Specify log directory path. Full file path will be logfiledir/%y%m%d-%H%M%S.log 
