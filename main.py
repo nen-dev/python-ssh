@@ -42,10 +42,12 @@ with open('config.yml','r') as configfile:
         t = Thread(target=run_device, args=(host,))
         t.setName(host['name'])
         t.start()
-        threads.append(t)      
-    while(fcontinue):
-        fcontinue = False
-        for t in threads:
-            fcontinue =+ t.isAlive()    
+        threads.append(t) 
+    for t in threads:
+        t.join() 
+        # while(fcontinue):
+        # fcontinue = False
+        # for t in threads:
+        # fcontinue =+ t.isAlive() to join, blocked request 
     print("All is done")
 
