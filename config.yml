@@ -11,6 +11,14 @@ hosts:
    interact: False # Set true if you want interact cli 
    logfile: /home/true_old_admin/python-ssh-today.log # Specify log file path
    cmd: ['ls -la','echo $PATH $HOME','uptime']
+   add_pub_auth: True # Configure public authentication.
+   # 1. Add %manager_username% to control and managed host.
+   # 2. Create private key and copy it to managed host
+   # 3*. Add to sudo NOPASSWD
+   control_host: 192.168.1.111
+   manager_username: ansible
+   manager_password: very-very-strong-passw0rd
+   managar_sudo_nopass: False   
  - name: 10.1.1.2 
    username: true_old_admin
    password: strong-password 

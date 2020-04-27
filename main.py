@@ -25,6 +25,7 @@ with open('config.yml','r') as configfile:
     today = strftime("%y%m%d-%H%M%S", gmtime())
     logfiledir = config['logfiledir']
     # TODO file exist check try
+    # TODO config file parser
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(name)-12s %(message)s',
                         datefmt='%C%y-%m-%dT%H:%M:%S',#'%m-%d %H:%M',
