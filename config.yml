@@ -3,6 +3,7 @@
 hosts:
  - name: 10.1.1.1 # Specify name or IP of control host
    username: true_old_admin # Specify username 
+   public_key_auth : False  
    password: strong-password # Specify password
    getpassword: False # Set true if you want enter password
    su: very-strong-password # Specify su password

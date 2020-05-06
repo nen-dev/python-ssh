@@ -7,15 +7,7 @@ from time import gmtime, strftime
 from threading import Thread
 
 def run_device(host):
-    deviceone = sshclass.device(name=host['name'],
-                            username=host['username'],
-                            password=host['password'],
-                            getpassword=host['getpassword'],
-                            su=host['su'],
-                            sugetpassword=host['sugetpassword'],
-                            use_sudo=host['use_sudo'],
-                            interact=host['interact'],
-                            cmd=host['cmd'])
+    deviceone = sshclass.device(**host)
     return(deviceone)
 
 with open('config.yml','r') as configfile:
