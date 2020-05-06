@@ -40,7 +40,7 @@ class device():
             self.send(finteract=False, cmd = [ 'sudo useradd -m -s /bin/bash ' + self.manager_username, 
                                               'sudo echo "' + self.manager_username + ':' + self.manager_password + '" | chpasswd',
                                               'sudo echo -e "' + self.manager_username + '\tALL=(ALL)\tNOPASSWD:\tALL" > /etc/sudoers.d/' + self.manager_username,
-                                              'su - ' + self.manager_username, encoding='utf-8' ])
+                                              'su - ' + self.manager_username])
             self.local_add_keys()
             
         # TODO check format of params 
