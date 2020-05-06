@@ -33,7 +33,7 @@ class device():
 
         self.cmd_genkey = ['sudo echo "' + self.manager_username + '    ' + 'ALL=(ALL)    NOPASSWD:    ALL" > /etc/sudoers.d/' + self.manager_username,
                            'sudo apt-get install sshpass -y',
-                           'sudo su - ' + self.manager_username + ' -c "ssh-keygen -b 4096 -t rsa -f ~/.ssh/' + self.name + ' -q -P \"\" "',
+                           'sudo su - ' + self.manager_username + ' -c "ssh-keygen -b 4096 -t rsa -f ~/.ssh/' + self.name + ' -q -P \'\' "',
                            'sudo su - ' + self.manager_username + ' -c "sshpass -p "' + self.manager_password + '" ssh-copy-id -f -o StrictHostKeyChecking=no -i ~/.ssh/' + self.name + ' ' + self.manager_username + '@' + self.name + '"']    
         
         self.cmd_managed_conf = ['apt-get install -y sudo',
