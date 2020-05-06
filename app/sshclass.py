@@ -27,23 +27,30 @@ class device():
         self.manager_sudo_nopass = manager_sudo_nopass
         self.public_key_auth = public_key_auth
         
+        
+        self.cmd_local = ['sudo useradd -m -s /bin/bash ' + self.manager_username,
+                          'sudo echo "' + self.manager_username + ':' + self.manager_password_control_host + '" | sudo /usr/sbin/chpasswd']
+
+        self.cmd_genkey = ['sudo echo "' + self.manager_username + '    ' + 'ALL=(ALL)    NOPASSWD:    ALL" > /etc/sudoers.d/' + self.manager_username,
+                           'sudo apt-get install sshpass -y',
+                           'sudo su - ' + self.manager_username + ' -c "ssh-keygen -b 4096 -t rsa -f ~/.ssh/' + self.name + ' -q -P \"\" "',
+                           'sudo su - ' + self.manager_username + ' -c "sshpass -p "' + self.manager_password + '" ssh-copy-id -f -o StrictHostKeyChecking=no -i ~/.ssh/' + self.name + ' ' + self.manager_username + '@' + self.name + '"']    
+        
+        self.cmd_managed_conf = ['apt-get install -y sudo',
+                                 'useradd -m -s /bin/bash ' + self.manager_username,
+                                 'echo "' + self.manager_username + ':' + self.manager_password + '" | /usr/sbin/chpasswd',
+                                 'echo "' + self.manager_username + ' ' +  ' ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/' + self.manager_username]
         # TODO: improve adding users
         if bool(self.add_pub_auth):
-            self.local_adduser() # 1.1. Create ansible user for a control host and change password
-            # 1.1. Create ansible user for a managed host and change password
-            # MUST BE SUDO ON CONTROL HOST
-            # MUST BE INSTALLED SUDO
+            self.spawn_local(cmd=self.cmd_local) # 1.. Create ansible user for a control host and change password
+            
             self.spawn()
-            self.child.sendline('su')
-            self.child.expect('.*.: ')
-            self.child.sendline(self.su)
-            self.child.prompt()
-            self.send(cmd = [ 'apt-get install -y sudo','sudo useradd -m -s /bin/bash ' + self.manager_username, 
-                                              'sudo echo "' + self.manager_username + ':' + self.manager_password + '" | chpasswd',
-                                              'sudo echo -e "' + self.manager_username + '\tALL=(ALL)\tNOPASSWD:\tALL" > /etc/sudoers.d/' + self.manager_username,
-                                              'su - ' + self.manager_username])
-            self.local_add_keys()
+            print('DEBUG: ', self.cmd_managed_conf)
+            self.spawn_su(cmd = self.cmd_managed_conf) # 2. Create ansible user for a managed host and change password
             self.logout()
+
+            self.spawn_local(cmd = self.cmd_genkey) # 3. Generate rsa key on control host and copy key to a managed host 
+            
         # TODO check format of params 
         # TODO lock input/output
         # TODO key auth
@@ -59,33 +66,32 @@ class device():
             else:
                 self.spawn() 
                 self.send(finteract=bool(self.interact), cmd = self.cmd)               
-                self.logout()
+                self.logout()                         
 
-    def local_add_keys(self):
-        self.local_child = spawn('sudo echo -e "' + self.manager_username + '\tALL=(ALL)\tNOPASSWD:\tALL" > /etc/sudoers.d/' + self.manager_username, encoding='utf-8')
-        self.logger.info(self.local_child.before)        
-        self.local_child = spawn('su - ' + self.manager_password, encoding='utf-8')
-        self.logger.info(self.local_child.before)
-        self.local_child = spawn('sudo apt-get install sshpass -y', encoding='utf-8')
-        self.logger.info(self.local_child.before)
-        self.local_child = spawn('ssh-keygen -b 4096 -t rsa -f ~/.ssh/' + self.name + ' -q -P ""', encoding='utf-8')
-        self.logger.info(self.local_child.before)
-        self.local_child = spawn('sshpass -p \'' + self.manager_password + '\' ssh-copy-id -f -o StrictHostKeyChecking=no -i ~/.ssh/' + self.name + '.pub ' + self.manager_username + '@' + self.name, encoding='utf-8')
-        self.logger.info(self.local_child.before)                         
-        self.local_child.expect(EOF)
-
-    def local_adduser(self):
-        print('\n\nLOCAL:')
-        self.local_child = spawn('sudo useradd -m -s /bin/bash ' + self.manager_username, encoding='utf-8')
-        self.local_child = spawn('echo "' + self.manager_username + ':' + self.manager_password_control_host + '" | chpasswd', encoding='utf-8')
-        self.local_child.expect(EOF)
-        self.logger.info(self.local_child.before)
+    def spawn_su(self, cmd = []):
+        try:        
+            for command in cmd:
+                print('DEBUG: ','su - root -c \'' + command + '\'' )
+                self.child.sendline('su - root -c \'' + command + '\'' )
+                self.child.sendline(self.su)
+                self.child.prompt()
+                self.logger.info(self.child.before.decode('UTF-8'))
+        except Exception as e:
+            print("Enter command error: ",e)    
+    def spawn_local(self,cmd = []):
+        try:        
+            # TODO ADD CHECK SUDO
+            for command in cmd:
+                self.local_child = spawn(command)
+                self.local_child.expect(EOF)
+                self.logger.info(self.local_child.before)  
+        except Exception as e:
+            print("Enter local command error: ",e)           
+            
     def spawn(self):
         try:
             self.child = pxssh.pxssh()
             self.child.login(self.name, self.username, self.password)
-            self.child.sendline('uptime')
-            self.child.prompt()
         except pxssh.ExceptionPxssh as e:
             print("pxssh failed on login.")
             print(e)
