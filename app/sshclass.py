@@ -13,7 +13,7 @@ class device():
         self.username=username
         self.password=str(password)
         self.getpassword=getpassword
-        self.su=su
+        self.su=str(su)
         self.sugetpassword=sugetpassword
         self.use_sudo=use_sudo
         self.interact=interact
@@ -26,8 +26,9 @@ class device():
         self.manager_password = manager_password
         self.manager_sudo_nopass = manager_sudo_nopass
         self.public_key_auth = public_key_auth
+        
         # TODO: improve adding users
-        if self.add_pub_auth:
+        if bool(self.add_pub_auth):
             self.local_adduser() # 1.1. Create ansible user for a control host and change password
             # 1.1. Create ansible user for a managed host and change password
             # MUST BE SUDO ON CONTROL HOST
@@ -35,14 +36,14 @@ class device():
             self.spawn()
             self.child.sendline('su')
             self.child.expect('.*.: ')
-            self.child.sendline(self.sugetpassword)
+            self.child.sendline(self.su)
             self.child.prompt()
-            self.send(finteract=False, cmd = [ 'sudo useradd -m -s /bin/bash ' + self.manager_username, 
+            self.send(cmd = [ 'apt-get install -y sudo','sudo useradd -m -s /bin/bash ' + self.manager_username, 
                                               'sudo echo "' + self.manager_username + ':' + self.manager_password + '" | chpasswd',
                                               'sudo echo -e "' + self.manager_username + '\tALL=(ALL)\tNOPASSWD:\tALL" > /etc/sudoers.d/' + self.manager_username,
                                               'su - ' + self.manager_username])
             self.local_add_keys()
-            
+            self.logout()
         # TODO check format of params 
         # TODO lock input/output
         # TODO key auth
@@ -53,14 +54,16 @@ class device():
         else:
             if bool(getpassword):
                 self.spawn_input() 
-                self.send(finteract=bool(self.interact, cmd = self.cmd))
+                self.send(finteract=bool(self.interact), cmd = self.cmd)
                 self.logout()            
             else:
                 self.spawn() 
-                self.send(finteract=bool(self.interact, cmd = self.cmd))               
+                self.send(finteract=bool(self.interact), cmd = self.cmd)               
                 self.logout()
 
     def local_add_keys(self):
+        self.local_child = spawn('sudo echo -e "' + self.manager_username + '\tALL=(ALL)\tNOPASSWD:\tALL" > /etc/sudoers.d/' + self.manager_username, encoding='utf-8')
+        self.logger.info(self.local_child.before)        
         self.local_child = spawn('su - ' + self.manager_password, encoding='utf-8')
         self.logger.info(self.local_child.before)
         self.local_child = spawn('sudo apt-get install sshpass -y', encoding='utf-8')
@@ -105,7 +108,7 @@ class device():
         except Exception as e:
             print("Connection error: ",e)   
             
-    def send(self, finteract = False, cmd = []):
+    def send(self, finteract = bool(False), cmd = []):
         try:        
             # TODO ADD CHECK SUDO
             for command in cmd:
