@@ -67,7 +67,7 @@ class device():
         self.logger.info(self.local_child.before)
         self.local_child = spawn('ssh-keygen -b 4096 -t rsa -f ~/.ssh/' + self.name + ' -q -P ""', encoding='utf-8')
         self.logger.info(self.local_child.before)
-        self.local_child = spawn('sshpass -p \'' + self.manager_password + '\' ssh-copy-id -f -o StrictHostKeyChecking=no -i ~/.ssh/' + self.name + '.pub + ' self.manager_username + '@' + self.name, encoding='utf-8')
+        self.local_child = spawn('sshpass -p \'' + self.manager_password + '\' ssh-copy-id -f -o StrictHostKeyChecking=no -i ~/.ssh/' + self.name + '.pub ' + self.manager_username + '@' + self.name, encoding='utf-8')
         self.logger.info(self.local_child.before)                         
         self.local_child.expect(EOF)
 
