@@ -19,9 +19,10 @@ hosts:
    control_host: 192.168.1.111
    manager_username: ansible
    manager_password: very-very-strong-passw0rd
-   managar_sudo_nopass: False   
+   manager_sudo_nopass: False   
  - name: 10.1.1.2 
    username: true_old_admin
+   public_key_auth : False    
    password: strong-password 
    getpassword: False 
    su: very-strong-password 
@@ -30,4 +31,12 @@ hosts:
    interact: False 
    logfile: /home/true_old_admin/python-ssh-today.log
    cmd: ['echo "Hello world!"']
+   add_pub_auth: True # Configure public authentication.
+   # 1. Add %manager_username% to control and managed host.
+   # 2. Create private key and copy it to managed host
+   # 3*. Add to sudo NOPASSWD
+   control_host: 192.168.1.111
+   manager_username: ansible
+   manager_password: very-very-strong-passw0rd
+   manager_sudo_nopass: False   
 logfiledir:  /home/true_old_admin/ssh-log # Specify log directory path. Full file path will be logfiledir/%y%m%d-%H%M%S.log 

@@ -7,7 +7,7 @@ import sys
 from pexpect import pxssh,spawn, EOF
 
 class device():
-    def __init__(self,name,username,password,getpassword,su,sugetpassword,use_sudo,interact,cmd, add_pub_auth, control_host, manager_username, manager_password, managar_sudo_nopass, manager_password_control_host, public_key_auth):
+    def __init__(self,name,username,password,getpassword,su,sugetpassword,use_sudo,interact,cmd, add_pub_auth, control_host, manager_username, manager_password, manager_sudo_nopass, manager_password_control_host, public_key_auth):
         ''' Should specify all params '''
         self.name=name
         self.username=username
@@ -24,7 +24,7 @@ class device():
         self.manager_username = manager_username
         self.manager_password_control_host = manager_password_control_host
         self.manager_password = manager_password
-        self.managar_sudo_nopass = managar_sudo_nopass
+        self.manager_sudo_nopass = manager_sudo_nopass
         self.public_key_auth = public_key_auth
         # TODO: improve adding users
         if self.add_pub_auth:
@@ -62,6 +62,8 @@ class device():
                 self.logout()
 
     def local_add_keys(self):
+        self.local_child = spawn('su - ' + self.manager_password, encoding='utf-8')
+        self.logger.info(self.local_child.before)
         self.local_child = spawn('sudo apt-get install sshpass -y', encoding='utf-8')
         self.logger.info(self.local_child.before)
         self.local_child = spawn('ssh-keygen -b 4096 -t rsa -f ~/.ssh/' + self.name + ' -q -P ""', encoding='utf-8')
