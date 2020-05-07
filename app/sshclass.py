@@ -33,6 +33,7 @@ class device():
 
         self.cmd_genkey = ['sudo echo "' + self.manager_username + '    ' + 'ALL=(ALL)    NOPASSWD:    ALL" > /etc/sudoers.d/' + self.manager_username,
                            'sudo apt-get install sshpass -y',
+                           'sudo su - ' + self.manager_username + ' -c "rm ~/.ssh/' + self.name +  '*"',
                            'sudo su - ' + self.manager_username + ' -c "ssh-keygen -b 4096 -t rsa -f ~/.ssh/' + self.name + ' -q -P \'\' "',
                            'sudo su - ' + self.manager_username + ' -c "sshpass -p "' + self.manager_password + '" ssh-copy-id -f -o StrictHostKeyChecking=no -i ~/.ssh/' + self.name + ' ' + self.manager_username + '@' + self.name + '"']    
         
@@ -40,7 +41,8 @@ class device():
                                  'useradd -m -s /bin/bash ' + self.manager_username,
                                  'echo "' + self.manager_username + ':' + self.manager_password + '" | /usr/sbin/chpasswd',
                                  'echo "' + self.manager_username + ' ' +  ' ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/' + self.manager_username]
-        # TODO: improve adding users
+       
+       # TODO: improve adding users
         if bool(self.add_pub_auth):
             self.spawn_local(cmd=self.cmd_local) # 1.. Create ansible user for a control host and change password
             
@@ -60,19 +62,39 @@ class device():
             print('INFO: command list is empty')
         else:
             if bool(getpassword):
-                self.spawn_input() 
-                self.send(finteract=bool(self.interact), cmd = self.cmd)
-                self.logout()            
+                try:
+                    self.spawn_input() 
+                except Exception as e:
+                    print("login error: ",e)
+          
             else:
-                self.spawn() 
-                self.send(finteract=bool(self.interact), cmd = self.cmd)               
-                self.logout()                         
-
+                try:
+                    self.spawn() 
+                except Exception as e:
+                    print("login error: ",e)
+            if bool(self.use_sudo)
+                self.send_sudo(finteract=bool(self.interact), cmd = self.cmd)
+            else:
+                self.send(finteract=bool(self.interact), cmd = self.cmd)
+            self.logout()                  
+            
+    def send_sudo(self, cmd = []):
+        try:        
+            # TODO ADD CHECK SUDO
+            for command in cmd:
+                self.child.sendline('sudo ' + command)
+                self.child.prompt()
+                self.logger.info(self.child.before.decode('UTF-8')) 
+            if finteract:
+                self.child.interact()        
+        except Exception as e:
+            print("Enter command error: ",e)         
     def spawn_su(self, cmd = []):
         try:        
             for command in cmd:
                 print('DEBUG: ','su - root -c \'' + command + '\'' )
                 self.child.sendline('su - root -c \'' + command + '\'' )
+                self.child.waitnoecho()
                 self.child.sendline(self.su)
                 self.child.prompt()
                 self.logger.info(self.child.before.decode('UTF-8'))
