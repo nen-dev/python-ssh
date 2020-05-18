@@ -7,10 +7,11 @@ import sys
 from pexpect import pxssh,spawn, EOF
 
 class device():
-    def __init__(self,name,username,password,getpassword,su,sugetpassword,use_sudo,interact,cmd, add_pub_auth, control_host, manager_username, manager_password, manager_sudo_nopass, manager_password_control_host, public_key_auth):
+    def __init__(self,name,username,password,getpassword,su,sugetpassword,use_sudo,interact,cmd, add_pub_auth, control_host, manager_username, manager_password, manager_sudo_nopass, manager_password_control_host, public_key_auth, ssh_key):
         ''' Should specify all params '''
         self.name=name
         self.username=username
+        self.ssh_key = ssh_key
         self.password=str(password)
         self.getpassword=getpassword
         self.su=str(su)
@@ -61,24 +62,31 @@ class device():
         if not self.cmd:
             print('INFO: command list is empty')
         else:
-            if bool(getpassword):
+            if bool(self.public_key_auth):
                 try:
-                    self.spawn_input() 
+                    self.spawn_pubauth() 
                 except Exception as e:
-                    print("login error: ",e)
-          
+                    print("login error: ",e)               
             else:
-                try:
-                    self.spawn() 
-                except Exception as e:
-                    print("login error: ",e)
-            if bool(self.use_sudo)
-                self.send_sudo(finteract=bool(self.interact), cmd = self.cmd)
+                if bool(getpassword):
+                    try:
+                        self.spawn_input() 
+                    except Exception as e:
+                        print("login error: ",e)         
+                else:
+                    try:
+                        self.spawn() 
+                    except Exception as e:
+                        print("login error: ",e)
+                    
+                    
+            if bool(self.use_sudo):
+                self.send_sudo(cmd = self.cmd)
             else:
                 self.send(finteract=bool(self.interact), cmd = self.cmd)
             self.logout()                  
             
-    def send_sudo(self, cmd = []):
+    def send_sudo(self,  finteract = bool(False), cmd = []):
         try:        
             # TODO ADD CHECK SUDO
             for command in cmd:
@@ -109,7 +117,14 @@ class device():
                 self.logger.info(self.local_child.before)  
         except Exception as e:
             print("Enter local command error: ",e)           
-            
+    def spawn_pubauth(self):
+        try:
+            ssh_options = 
+            self.child = pxssh.pxssh(options=ssh_options)
+            self.child.login(hostname=self.name, username=self.username, ssh_key=self.ssh_key)
+        except pxssh.ExceptionPxssh as e:
+            print("pxssh failed on login.")
+            print(e)            
     def spawn(self):
         try:
             self.child = pxssh.pxssh()

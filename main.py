@@ -5,6 +5,7 @@ from pexpect import pxssh
 from app import sshclass
 from time import gmtime, strftime
 from threading import Thread
+from queue import Queue
 
 MAXIMUM_THREADS=8
 def run_device(host):
@@ -38,7 +39,7 @@ with open('config.yml','r') as configfile:
         except Exception as e:
             print("Error setting up logging: ", e) 
     else:
-        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)-12s %(message)s',datefmt='%C%y-%m-%dT%H:%M:%S','%m-%d %H:%M')
+        logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)-12s %(message)s',datefmt='%C%y-%m-%dT%H:%M:%S')
         console = logging.StreamHandler()
         console.setLevel(logging.INFO)
         formatter = logging.Formatter('%(name)-12s %(message)s')
@@ -54,14 +55,13 @@ with open('config.yml','r') as configfile:
         t.daemon = True
         t.start()
         threads.append(t) 
-    for t in threads:
-        t.join() 
-        # while(fcontinue):
-        # fcontinue = False
-        # for t in threads:
-        # fcontinue =+ t.isAlive() to join, blocked request 
+
+    # while(fcontinue):
+    # fcontinue = False
+    # for t in threads:
+    # fcontinue =+ t.isAlive() to join, blocked request 
     
-    for item in source():
+    for item in range(MAXIMUM_THREADS):
         q.put(item)
 
     q.join()       # block until all tasks are done
