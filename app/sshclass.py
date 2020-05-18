@@ -119,7 +119,7 @@ class device():
             print("Enter local command error: ",e)           
     def spawn_pubauth(self):
         try:
-            ssh_options = 
+            ssh_options = ''
             self.child = pxssh.pxssh(options=ssh_options)
             self.child.login(hostname=self.name, username=self.username, ssh_key=self.ssh_key)
         except pxssh.ExceptionPxssh as e:
